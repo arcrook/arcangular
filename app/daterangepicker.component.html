@@ -1,0 +1,84 @@
+ <input type="text" class="form-control" name="daterange" value="{{startDate.format('DD-MMM-YYYY')}} - {{endDate.format('DD-MMM-YYYY')}}"
+        (focusin)="onFocusIn()"
+        (focusout)="onFocusOut()"
+        />
+
+    <div class="daterangepicker opensleft" [class.hidden]="!visible" 
+                (focusin)="onFocusIn()"
+        (focusout)="onFocusOut()">
+        <div class="row">
+          <div class="col-md-6">
+                <div class="calendar-table">
+                    <table class="table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="prev available" (click)="onChangeDisplayMonth(-1)">
+                                    <strong (click)="onChangeDisplayMonth(-1)"><</strong>
+                                    </th>
+                                <th colspan="5" class="month">{{leftCalanderRefDate.format('MMM Y')}}</th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <th>Su</th>
+                                <th>Mo</th>
+                                <th>Tu</th>
+                                <th>We</th>
+                                <th>Th</th>
+                                <th>Fr</th>
+                                <th>Sa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let week of leftCalander">
+                                <td *ngFor="let day of week.weekDates"                               
+                                [class.off]="day.isOff()"
+                                [class.available]="day.isAvailable()"
+                                [class.start-date]="isStartDate(day.date)"
+                                [class.active]="isStartDate(day.date) || isEndDate(day.date)"
+                                [class.in-range]="isInRange(day.date)"
+                                [class.end-date]="isEndDate(day.date)"
+                                (click)="onCalanderDateSelect(day)"
+                                >{{day.getDateString()}}</td>                            
+                            </tr>                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+            <div class="calendar-table">
+                <table class="table-condensed">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th colspan="5" class="month">{{rightCalanderRefDate.format('MMM Y')}}</th>
+                            <th class="next available" (click)="onChangeDisplayMonth(1)">
+                                <strong (click)="onChangeDisplayMonth(1)">></strong>
+                                </th>
+                        </tr>
+                        <tr>
+                            <th>Su</th>
+                            <th>Mo</th>
+                            <th>Tu</th>
+                            <th>We</th>
+                            <th>Th</th>
+                            <th>Fr</th>
+                            <th>Sa</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let week of rightCalander">
+                                <td *ngFor="let day of week.weekDates"                               
+                                [class.off]="day.isOff()"
+                                [class.available]="day.isAvailable()"
+                                [class.start-date]="isStartDate(day.date)"
+                                [class.active]="isStartDate(day.date) || isEndDate(day.date)"
+                                [class.in-range]="isInRange(day.date)"
+                                [class.end-date]="isEndDate(day.date)"
+                                (click)="onCalanderDateSelect(day)"
+                                >{{day.getDateString()}}</td>                                    
+                            </tr>                            
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+    </div>
