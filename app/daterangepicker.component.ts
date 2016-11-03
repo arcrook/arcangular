@@ -75,7 +75,26 @@ export class DateRangePickerComponent implements OnInit {
           this.visible = this.visible ? false : true;
     }
 
-    private onCalanderDateSelect(calanderDay : CalanderDay) {
+    private onCalanderDateSelect(calanderDay : CalanderDay, leftCalander : boolean) {
+
+            let monthAdjust : number
+            if(calanderDay.date.isBefore(this.leftCalanderRefDate.clone().startOf('month'))) {
+                monthAdjust = -1;
+            };
+
+            if(calanderDay.date.isAfter(this.rightCalanderRefDate.clone().startOf('month')) 
+               && calanderDay.date.isBefore(this.rightCalanderRefDate.clone().endOf('month'))) {
+                monthAdjust = 0;
+            }
+
+            if(calanderDay.date.isAfter(this.rightCalanderRefDate.clone().endOf('month'))) {
+                monthAdjust = 2;
+            }
+                        
+            if(monthAdjust !== 0) {
+                this.onChangeDisplayMonth(monthAdjust);
+            }
+            
             if(this.secondDateSelected){
                 this.startDate = calanderDay.date;
                 this.endDate = calanderDay.date;

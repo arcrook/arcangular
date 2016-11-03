@@ -34,7 +34,7 @@
                                 [class.active]="isStartDate(day.date) || isEndDate(day.date)"
                                 [class.in-range]="isInRange(day.date)"
                                 [class.end-date]="isEndDate(day.date)"
-                                (click)="onCalanderDateSelect(day)"
+                                (click)="onCalanderDateSelect(day, true)"
                                 >{{day.getDateString()}}</td>                            
                             </tr>                           
                         </tbody>
@@ -71,7 +71,7 @@
                                 [class.active]="isStartDate(day.date) || isEndDate(day.date)"
                                 [class.in-range]="isInRange(day.date)"
                                 [class.end-date]="isEndDate(day.date)"
-                                (click)="onCalanderDateSelect(day)"
+                                (click)="onCalanderDateSelect(day, false)"
                                 >{{day.getDateString()}}</td>                                    
                             </tr>                            
                         </tbody>
