@@ -1,11 +1,8 @@
- <input type="text" class="form-control" name="daterange" value="{{startDate.format('DD-MMM-YYYY')}} - {{endDate.format('DD-MMM-YYYY')}}"
-        (focusin)="onFocusIn()"
-        (focusout)="onFocusOut()"
-        />
 
-    <div class="daterangepicker opensleft" [class.hidden]="!visible" 
-                (focusin)="onFocusIn()"
-        (focusout)="onFocusOut()">
+ <input #inputBox type="text" class="form-control" name="daterange" value="{{startDate.format('DD-MMM-YYYY')}} - {{endDate.format('DD-MMM-YYYY')}}" 
+    (click)="onClickInput($event)" (focusout)="onFocusOutEvent($event)" />
+
+    <div class="daterangepicker opensleft" [class.hidden]="!visible" (click)="onEvent($event)"  (mouseenter)="onEvent($event)" (mouseleave)="onEvent($event)">
         <div class="row">
           <div class="col-md-6">
                 <div class="calendar-table">

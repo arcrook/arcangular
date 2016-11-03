@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Moment , utc, localeData } from 'moment';
 
 @Component({
@@ -21,8 +21,12 @@ export class DateRangePickerComponent implements OnInit {
 
     secondDateSelected : boolean = true;
     
-    
     private visible:boolean = false;
+
+    @ViewChild('inputBox') private inputBoxElement: ElementRef;
+    element: Element;
+
+    mouseOutSidePicker : boolean
 
     constructor() { 
 
@@ -39,18 +43,58 @@ export class DateRangePickerComponent implements OnInit {
         this.rightCalander = this.createCalendar(this.rightCalanderRefDate);
     }
 
-    onFocusIn() {
-        if (this.visible) {
-            return;
+    //Click behavior : click on input show. Click again hide.
+    //               : click within piker. Remain focus on input.
+    //               : mouse move outside picker, click hide picker.   
+    private onEvent(event: MouseEvent): void { 
+
+        if(event.type === "mouseleave"){
+            this.mouseOutSidePicker = true;
         }
-        this.visible = true;
+
+        if(event.type === "mouseenter"){
+            this.mouseOutSidePicker = false;
+        }
+        //keep focus on the inputBox as the user is clicking within picker
+        if(!this.mouseOutSidePicker){
+            this.inputBoxElement.nativeElement.focus();
+        }
     }
 
-    onFocusOut() {
-        if (!this.visible) {
-            return;
-        }
-        this.visible = false;
+    private onFocusOutEvent(event : MouseEvent) : void {
+         if(!this.mouseOutSidePicker){
+            this.inputBoxElement.nativeElement.focus();
+         }
+         if(this.mouseOutSidePicker){
+             this.visible = false;
+         }
+          this.element =   event.fromElement
+    }
+
+    private onClickInput(event: MouseEvent): void {
+          this.visible = this.visible ? false : true;
+    }
+
+    private onCalanderDateSelect(calanderDay : CalanderDay) {
+            if(this.secondDateSelected){
+                this.startDate = calanderDay.date;
+                this.endDate = calanderDay.date;
+                this.secondDateSelected = false;
+            }
+            else {
+                if(calanderDay.date.isBefore(this.startDate, 'day')){
+                    this.startDate = calanderDay.date;
+                } else {
+                     this.endDate = calanderDay.date;
+                }
+                
+                this.secondDateSelected = true;
+            }
+    }
+
+    onChangeDisplayMonth(month : number){
+        this.leftCalander = this.createCalendar(this.leftCalanderRefDate.add(month, 'month'));
+        this.rightCalander = this.createCalendar(this.rightCalanderRefDate.add(month, 'month'));
     }
 
     createCalendar(referanceDate : Moment) : CalanderWeek[] {
@@ -101,10 +145,7 @@ export class DateRangePickerComponent implements OnInit {
             return calendarMonth;   
     }
 
-    onChangeDisplayMonth(month : number){
-        this.leftCalander = this.createCalendar(this.leftCalanderRefDate.add(month, 'month'));
-        this.rightCalander = this.createCalendar(this.rightCalanderRefDate.add(month, 'month'));
-    }
+
 
     isInRange(calanderDayDate : Moment) : boolean {
             
@@ -117,10 +158,8 @@ export class DateRangePickerComponent implements OnInit {
             {
                 return true;
             }
-            
-            
-            return calanderDayDate.isBetween(this.startDate, this.endDate, 'day');
-             
+
+            return calanderDayDate.isBetween(this.startDate, this.endDate, 'day');             
     }
 
     isStartDate(calanderDayDate : Moment) : boolean {
@@ -129,23 +168,6 @@ export class DateRangePickerComponent implements OnInit {
 
     isEndDate(calanderDayDate : Moment) : boolean {
         return calanderDayDate.isSame(this.endDate, 'day');
-    }
-
-    onCalanderDateSelect(calanderDay : CalanderDay) {
-            if(this.secondDateSelected){
-                this.startDate = calanderDay.date;
-                this.endDate = calanderDay.date;
-                this.secondDateSelected = false;
-            }
-            else {
-                if(calanderDay.date.isBefore(this.startDate, 'day')){
-                    this.startDate = calanderDay.date;
-                } else {
-                     this.endDate = calanderDay.date;
-                }
-                
-                this.secondDateSelected = true;
-            }
     }
 }
 
