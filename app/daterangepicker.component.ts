@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, Directive, Output, EventEmitter } from '@angular/core';
+
 import { Moment , utc, localeData } from 'moment';
 
 @Component({
@@ -12,19 +13,23 @@ export class DateRangePickerComponent implements OnInit {
     startDate : Moment;
     endDate : Moment;
 
+    leftDateInput : string;
+    rightDateInput : string;
+
     leftCalanderRefDate : Moment;
     rightCalanderRefDate : Moment;
 
-
     leftCalander : CalanderWeek[];
     rightCalander : CalanderWeek[];
+
+
 
     secondDateSelected : boolean = true;
     
     private visible:boolean = false;
 
     @ViewChild('inputBox') private inputBoxElement: ElementRef;
-    element: Element;
+    @ViewChild('daterangepicker') private daterangepickerElement: ElementRef;
 
     mouseOutSidePicker : boolean
 
@@ -57,24 +62,26 @@ export class DateRangePickerComponent implements OnInit {
         }
         //keep focus on the inputBox as the user is clicking within picker
         if(!this.mouseOutSidePicker){
-            this.inputBoxElement.nativeElement.focus();
+           
         }
     }
 
-    private onFocusOutEvent(event : MouseEvent) : void {
-         if(!this.mouseOutSidePicker){
-            this.inputBoxElement.nativeElement.focus();
+    private close(event : MouseEvent) : void {
+         if(!this.visible)
+         {
+                   return;
          }
+
          if(this.mouseOutSidePicker){
-             this.visible = false;
+             this.visible = false;        
          }
-          this.element =   event.fromElement
     }
 
     private onClickInput(event: MouseEvent): void {
           this.visible = this.visible ? false : true;
+          this.mouseOutSidePicker = false;
     }
-
+    
     private onCalanderDateSelect(calanderDay : CalanderDay, leftCalander : boolean) {
 
             let monthAdjust : number
@@ -115,6 +122,23 @@ export class DateRangePickerComponent implements OnInit {
         this.leftCalander = this.createCalendar(this.leftCalanderRefDate.add(month, 'month'));
         this.rightCalander = this.createCalendar(this.rightCalanderRefDate.add(month, 'month'));
     }
+
+    onDateInputFoucusOut(left : Boolean) : void {
+
+        var parseDateString = left ? this.leftDateInput : this.rightDateInput;
+        console.log(parseDateString);
+        console.log(navigator.language);
+        navigator.geolocation.getCurrentPosition(x => console.log(x.coords));
+
+        var day = utc(parseDateString);
+        day
+        if(day.isValid()) {
+    
+        }
+
+    }
+
+
 
     createCalendar(referanceDate : Moment) : CalanderWeek[] {
             
@@ -187,6 +211,30 @@ export class DateRangePickerComponent implements OnInit {
 
     isEndDate(calanderDayDate : Moment) : boolean {
         return calanderDayDate.isSame(this.endDate, 'day');
+    }
+}
+
+
+@Directive({
+    selector: '[clickOutside]'
+})
+export class ClickOutsideDirective {
+    constructor(private _elementRef: ElementRef) {
+    }
+
+    @Output()
+    public clickOutside = new EventEmitter<MouseEvent>();
+
+    @HostListener('document:click', ['$event', '$event.target'])
+    public onClick(event: MouseEvent, targetElement: HTMLElement): void {
+        if (!targetElement) {
+            return;
+        }
+
+        const clickedInside = this._elementRef.nativeElement.contains(targetElement);
+        if (!clickedInside) {
+            this.clickOutside.emit(event);
+        }
     }
 }
 

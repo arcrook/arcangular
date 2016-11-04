@@ -1,10 +1,22 @@
 
  <input #inputBox type="text" class="form-control" name="daterange" value="{{startDate.format('DD-MMM-YYYY')}} - {{endDate.format('DD-MMM-YYYY')}}" 
-    (click)="onClickInput($event)" (focusout)="onFocusOutEvent($event)" />
+    (click)="onClickInput($event)" /> 
+    
 
-    <div class="daterangepicker opensleft" [class.hidden]="!visible" (click)="onEvent($event)"  (mouseenter)="onEvent($event)" (mouseleave)="onEvent($event)">
+    <div class="daterangepicker opensleft" [class.hidden]="!visible" (click)="onEvent($event)"  
+            (mouseenter)="onEvent($event)" (mouseleave)="onEvent($event)" 
+            (clickOutside)="close($event)">
         <div class="row">
           <div class="col-md-6">
+            <div class="daterangepicker_input">
+                <input class="form-control input-mini" type="text" name="daterangepicker_start" [value]="startDate.format('DD-MMM-YYYY')"
+                (input)="leftDateInput=$event.target.value"
+                (blur)="onDateInputFoucusOut(true)">
+                    <i class="fa fa-calendar glyphicon glyphicon-calendar"></i>
+                    <div class="calendar-time" style="display: none;"><div></div><i class="fa fa-clock-o glyphicon glyphicon-time"></i>
+                    </div>
+            </div>
+
                 <div class="calendar-table">
                     <table class="table-condensed">
                         <thead>
@@ -42,6 +54,12 @@
                 </div>
             </div>
             <div class="col-md-6">
+            <div class="daterangepicker_input">
+                <input class="form-control input-mini" type="text" name="daterangepicker_end" value="{{endDate.format('DD-MMM-YYYY')}}">
+                    <i class="fa fa-calendar glyphicon glyphicon-calendar"></i>
+                    <div class="calendar-time" style="display: none;"><div></div><i class="fa fa-clock-o glyphicon glyphicon-time"></i>
+                    </div>
+            </div>
             <div class="calendar-table">
                 <table class="table-condensed">
                     <thead>
