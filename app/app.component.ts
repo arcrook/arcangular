@@ -24,6 +24,14 @@ import { Moment , utc, localeData } from 'moment';
 </form>
 </div>
 
+ <div class="row">
+     <input #inputBox type="text" class="form-control" name="daterange" [value]="startDate?.format('DD-MMM-YYYY')"
+        (input)="startDateString=$event.target.value"
+        (blur)="onBlur()" /> 
+
+        {{startDate?.format('DD-MMM-YYYY')}}
+  </div>
+
   <div class="row">
     <a class="btn btn-default" (click)="onDateParsing()">Date</a>
 
@@ -43,6 +51,22 @@ export class AppComponent {
     constructor() {
           
       
+    }
+
+    onBlur() {
+        this.startDate = this.getMomentFromDateString(this.startDateString);
+    }
+
+    getMomentFromDateString(dateString : string) : Moment {
+
+        let monthRegex  = /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/;
+        let match = dateString.toLowerCase().match(monthRegex);
+        console.log(match);
+        if(match !== null) {
+            return utc(dateString, "DD/MMM/YYYY");
+        }
+
+        return utc(dateString, "DD/MM/YYYY");
     }
 
 
