@@ -1,7 +1,8 @@
 /* tslint:disable:no-unused-variable */
 import { AppComponent } from './app.component';
+import { DateRangePickerComponent, ClickOutsideDirective} from './daterangepicker.component'
 
-import { TestBed }      from '@angular/core/testing';
+import { TestBed, async, ComponentFixture }      from '@angular/core/testing';
 
 import { By }           from '@angular/platform-browser';
 
@@ -15,17 +16,26 @@ describe('Smoke test', () => {
 });
 
 describe('AppComponent with TCB', function () {
-  beforeEach(() => {
-    TestBed.configureTestingModule({declarations: [AppComponent]});
+
+  let fixture : ComponentFixture<AppComponent>;
+ 
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({declarations: [AppComponent,  DateRangePickerComponent]})
+    .compileComponents().then( () => {
+    fixture = TestBed.createComponent(AppComponent);
+    
   });
+  }));
+
 
   it('should instantiate component', () => {
-    let fixture = TestBed.createComponent(AppComponent);
+   
     expect(fixture.componentInstance instanceof AppComponent).toBe(true, 'should create AppComponent');
   });
 
   it('should have expected <h1> text', () => {
-    let fixture = TestBed.createComponent(AppComponent);
+    
     fixture.detectChanges();
 
     let h1 = fixture.debugElement.query(el => el.name === 'h1').nativeElement;  // it works

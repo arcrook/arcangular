@@ -70,7 +70,8 @@ module.exports = function(config) {
       {pattern: appSrcBase + '**/*.ts', included: false, watched: false},
       {pattern: appBase + '**/*.js.map', included: false, watched: false},
       {pattern: testSrcBase + '**/*.ts', included: false, watched: false},
-      {pattern: testBase + '**/*.js.map', included: false, watched: false}
+      {pattern: testBase + '**/*.js.map', included: false, watched: false},
+      {pattern: 'node_modules/moment/min/moment.min.js', included: true, watched: true},
     ],
 
     // Proxied base paths for loading assets

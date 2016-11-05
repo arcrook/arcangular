@@ -37,7 +37,9 @@ import { Moment , utc, localeData } from 'moment';
 })
 export class AppComponent { 
     collection: string[] = [];
+    startDate : Moment;
 
+    startDateString : string;
     constructor() {
           
       
