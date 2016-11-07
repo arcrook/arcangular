@@ -16,7 +16,7 @@ import { Moment , utc, localeData } from 'moment';
     <label for="exampleInputDatePick" class="col-sm-2 control-label">DatePicker</label>
      <div class="col-sm-5">
 
-    <daterangepicker></daterangepicker>
+    <daterangepicker [startDate]="startDate" [endDate]="endDate"></daterangepicker>
     </div>
   </div>
  
@@ -45,7 +45,8 @@ import { Moment , utc, localeData } from 'moment';
 })
 export class AppComponent { 
     collection: string[] = [];
-    startDate : Moment;
+    startDate : Moment = utc('15/01/2016','DD/MM/YYYY');
+    endDate : Moment = utc('15/02/2016','DD/MM/YYYY');
 
     startDateString : string;
     constructor() {
@@ -58,7 +59,9 @@ export class AppComponent {
     }
 
     getMomentFromDateString(dateString : string) : Moment {
-
+        if(dateString === null || dateString === ""){
+            return;
+        }
         let monthRegex  = /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/;
         let match = dateString.toLowerCase().match(monthRegex);
         console.log(match);

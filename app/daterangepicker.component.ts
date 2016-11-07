@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener, Directive, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild, ElementRef, HostListener, Directive, Output, EventEmitter, Input } from '@angular/core';
 
 import { Moment , utc, localeData } from 'moment';
 
@@ -8,14 +8,15 @@ import { Moment , utc, localeData } from 'moment';
     templateUrl: 'daterangepicker.component.html',
     styleUrls: ['daterangepicker.component.css']
 })
-export class DateRangePickerComponent implements OnInit {
+export class DateRangePickerComponent implements OnChanges {
     
-    startDate : Moment;
-    endDate : Moment;
+    @Input() startDate : Moment;
+    @Input() endDate : Moment;
 
     leftDateInput : string;
     rightDateInput : string;
-
+    leftDateDisplay : string;
+    rightDateDisplay : string;
     leftCalanderRefDate : Moment;
     rightCalanderRefDate : Moment;
 
@@ -26,7 +27,7 @@ export class DateRangePickerComponent implements OnInit {
 
     secondDateSelected : boolean = true;
     
-    private visible:boolean = false;
+    visible:boolean = false;
 
     @ViewChild('inputBox') private inputBoxElement: ElementRef;
     @ViewChild('daterangepicker') private daterangepickerElement: ElementRef;
@@ -37,16 +38,29 @@ export class DateRangePickerComponent implements OnInit {
 
     }
 
-    ngOnInit() { 
-        this.startDate = utc('2016-01-15');
-        this.endDate = utc('2016-02-15');
+    ngOnChanges() {
 
-        this.leftCalanderRefDate = utc(this.startDate);
-        this.rightCalanderRefDate = utc(this.leftCalanderRefDate).add(1, 'month');
+        if(typeof this.startDate !== "undefined" && typeof this.endDate !== "undefined"){
+            console.log('ngOnChanges not undefined')
+            this.leftDateDisplay = this.startDate.format("DD-MMM-YYYY");
+            this.rightDateDisplay = this.endDate.format("DD-MMM-YYYY");
 
-        this.leftCalander = this.createCalendar(this.leftCalanderRefDate);
-        this.rightCalander = this.createCalendar(this.rightCalanderRefDate);
+            this.setRefDatesAndCreateCalendar()
+        } else {
+            console.log('ngOnChanges undefined')
+
+            this.startDate = utc();
+            this.endDate = utc();
+
+            this.leftDateDisplay = this.startDate.format("DD-MMM-YYYY");
+            this.rightDateDisplay = this.endDate.format("DD-MMM-YYYY");
+
+            this.setRefDatesAndCreateCalendar()
+        }
+
+
     }
+
 
     //Click behavior : click on input show. Click again hide.
     //               : click within piker. Remain focus on input.
@@ -69,7 +83,7 @@ export class DateRangePickerComponent implements OnInit {
     private close(event : MouseEvent) : void {
          if(!this.visible)
          {
-                   return;
+            return;
          }
 
          if(this.mouseOutSidePicker){
@@ -109,13 +123,15 @@ export class DateRangePickerComponent implements OnInit {
             }
             else {
                 if(calanderDay.date.isBefore(this.startDate, 'day')){
-                    this.startDate = calanderDay.date;
+                    this.startDate = calanderDay.date;    
                 } else {
-                     this.endDate = calanderDay.date;
-                }
-                
+                     this.endDate = calanderDay.date;                    
+                }             
                 this.secondDateSelected = true;
             }
+
+            this.leftDateDisplay = this.startDate.format("DD-MMM-YYYY");
+            this.rightDateDisplay = this.endDate.format("DD-MMM-YYYY");
     }
 
     onChangeDisplayMonth(month : number){
@@ -125,19 +141,58 @@ export class DateRangePickerComponent implements OnInit {
 
     onDateInputFoucusOut(left : Boolean) : void {
 
-        var parseDateString = left ? this.leftDateInput : this.rightDateInput;
-        console.log(parseDateString);
-        console.log(navigator.language);
-        navigator.geolocation.getCurrentPosition(x => console.log(x.coords));
+        if(left){
+            let temp = this.getMomentFromDateString(this.leftDateInput);
+            if(!temp.isValid()) {
+                this.leftDateDisplay = "Invalid Date"
+            } else {
+                this.startDate = temp;
+                this.leftDateDisplay = this.startDate.format("DD-MMM-YYYY");
+            }              
 
-        var day = utc(parseDateString);
-        day
-        if(day.isValid()) {
-    
+
+        } else {
+            let temp = this.getMomentFromDateString(this.rightDateInput);
+            if(!temp.isValid()) {
+                this.rightDateDisplay = "Invalid Date"
+            } else {
+                this.endDate = temp;
+                this.rightDateDisplay = this.endDate.format("DD-MMM-YYYY");
+
+                if(this.endDate.isBefore(this.startDate)){
+                    this.startDate = this.endDate.clone();
+                    this.leftDateDisplay = this.startDate.format("DD-MMM-YYYY");
+                }
+            }
         }
 
+        this.setRefDatesAndCreateCalendar()
     }
 
+
+    getMomentFromDateString(dateString : string) : Moment {
+
+        if(typeof dateString === "undefined"){
+            return utc("Invalid Date");
+        }
+
+
+        let monthRegex  = /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/;
+        let match = dateString.toLowerCase().match(monthRegex);       
+        if(match !== null) {
+            return utc(dateString, "DD/MMM/YYYY");
+        }
+
+        return utc(dateString, "DD/MM/YYYY");
+    }
+
+    setRefDatesAndCreateCalendar(){
+        this.leftCalanderRefDate = utc(this.startDate);
+        this.rightCalanderRefDate = utc(this.leftCalanderRefDate).add(1, 'month');
+
+        this.leftCalander = this.createCalendar(this.leftCalanderRefDate);
+        this.rightCalander = this.createCalendar(this.rightCalanderRefDate);
+    }
 
 
     createCalendar(referanceDate : Moment) : CalanderWeek[] {
@@ -187,8 +242,6 @@ export class DateRangePickerComponent implements OnInit {
 
             return calendarMonth;   
     }
-
-
 
     isInRange(calanderDayDate : Moment) : boolean {
             

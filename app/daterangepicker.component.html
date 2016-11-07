@@ -1,5 +1,6 @@
 
- <input #inputBox type="text" class="form-control" name="daterange" value="{{startDate.format('DD-MMM-YYYY')}} - {{endDate.format('DD-MMM-YYYY')}}" 
+ <input #inputBox type="text" class="form-control" name="daterange" 
+    readonly value="{{leftDateDisplay}} - {{rightDateDisplay}}" 
     (click)="onClickInput($event)" /> 
     
 
@@ -9,7 +10,7 @@
         <div class="row">
           <div class="col-md-6">
             <div class="daterangepicker_input">
-                <input class="form-control input-mini" type="text" name="daterangepicker_start" [value]="startDate.format('DD-MMM-YYYY')"
+                <input class="form-control input-mini" type="text" name="daterangepicker_start" [value]="leftDateDisplay"
                 (input)="leftDateInput=$event.target.value"
                 (blur)="onDateInputFoucusOut(true)">
                     <i class="fa fa-calendar glyphicon glyphicon-calendar"></i>
@@ -24,7 +25,7 @@
                                 <th class="prev available" (click)="onChangeDisplayMonth(-1)">
                                     <strong (click)="onChangeDisplayMonth(-1)"><</strong>
                                     </th>
-                                <th colspan="5" class="month">{{leftCalanderRefDate.format('MMM Y')}}</th>
+                                <th colspan="5" class="month">{{leftCalanderRefDate?.format('MMM Y')}}</th>
                                 <th></th>
                             </tr>
                             <tr>
@@ -55,7 +56,9 @@
             </div>
             <div class="col-md-6">
             <div class="daterangepicker_input">
-                <input class="form-control input-mini" type="text" name="daterangepicker_end" value="{{endDate.format('DD-MMM-YYYY')}}">
+                                <input class="form-control input-mini" type="text" name="daterangepicker_end" [value]="rightDateDisplay"
+                (input)="rightDateInput=$event.target.value"
+                (blur)="onDateInputFoucusOut(false)">
                     <i class="fa fa-calendar glyphicon glyphicon-calendar"></i>
                     <div class="calendar-time" style="display: none;"><div></div><i class="fa fa-clock-o glyphicon glyphicon-time"></i>
                     </div>
@@ -65,7 +68,7 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th colspan="5" class="month">{{rightCalanderRefDate.format('MMM Y')}}</th>
+                            <th colspan="5" class="month">{{rightCalanderRefDate?.format('MMM Y')}}</th>
                             <th class="next available" (click)="onChangeDisplayMonth(1)">
                                 <strong (click)="onChangeDisplayMonth(1)">></strong>
                                 </th>
