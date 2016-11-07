@@ -1,6 +1,6 @@
 
  <input #inputBox type="text" class="form-control" name="daterange" 
-    readonly value="{{startDate.format('DD-MMM-YYYY')}} - {{endDate.format('DD-MMM-YYYY')}}" 
+    readonly value="{{leftDateDisplay}} - {{rightDateDisplay}}" 
     (click)="onClickInput($event)" /> 
     
 
@@ -25,7 +25,7 @@
                                 <th class="prev available" (click)="onChangeDisplayMonth(-1)">
                                     <strong (click)="onChangeDisplayMonth(-1)"><</strong>
                                     </th>
-                                <th colspan="5" class="month">{{leftCalanderRefDate.format('MMM Y')}}</th>
+                                <th colspan="5" class="month">{{leftCalanderRefDate?.format('MMM Y')}}</th>
                                 <th></th>
                             </tr>
                             <tr>
@@ -68,7 +68,7 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th colspan="5" class="month">{{rightCalanderRefDate.format('MMM Y')}}</th>
+                            <th colspan="5" class="month">{{rightCalanderRefDate?.format('MMM Y')}}</th>
                             <th class="next available" (click)="onChangeDisplayMonth(1)">
                                 <strong (click)="onChangeDisplayMonth(1)">></strong>
                                 </th>

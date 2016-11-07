@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener, Directive, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild, ElementRef, HostListener, Directive, Output, EventEmitter, Input } from '@angular/core';
 
 import { Moment , utc, localeData } from 'moment';
 
@@ -8,10 +8,10 @@ import { Moment , utc, localeData } from 'moment';
     templateUrl: 'daterangepicker.component.html',
     styleUrls: ['daterangepicker.component.css']
 })
-export class DateRangePickerComponent implements OnInit {
+export class DateRangePickerComponent implements OnChanges {
     
-    startDate : Moment;
-    endDate : Moment;
+    @Input() startDate : Moment;
+    @Input() endDate : Moment;
 
     leftDateInput : string;
     rightDateInput : string;
@@ -27,7 +27,7 @@ export class DateRangePickerComponent implements OnInit {
 
     secondDateSelected : boolean = true;
     
-    private visible:boolean = false;
+    visible:boolean = false;
 
     @ViewChild('inputBox') private inputBoxElement: ElementRef;
     @ViewChild('daterangepicker') private daterangepickerElement: ElementRef;
@@ -38,14 +38,27 @@ export class DateRangePickerComponent implements OnInit {
 
     }
 
-    ngOnInit() { 
-        this.startDate = utc('2016-01-15');
-        this.endDate = utc('2016-02-15');
+    ngOnChanges() {
 
-        this.leftDateDisplay = this.startDate.format("DD-MMM-YYYY");
-        this.rightDateDisplay = this.endDate.format("DD-MMM-YYYY");
+        if(typeof this.startDate !== "undefined" && typeof this.endDate !== "undefined"){
+            console.log('ngOnChanges not undefined')
+            this.leftDateDisplay = this.startDate.format("DD-MMM-YYYY");
+            this.rightDateDisplay = this.endDate.format("DD-MMM-YYYY");
 
-        this.setRefDatesAndCreateCalendar()
+            this.setRefDatesAndCreateCalendar()
+        } else {
+            console.log('ngOnChanges undefined')
+
+            this.startDate = utc();
+            this.endDate = utc();
+
+            this.leftDateDisplay = this.startDate.format("DD-MMM-YYYY");
+            this.rightDateDisplay = this.endDate.format("DD-MMM-YYYY");
+
+            this.setRefDatesAndCreateCalendar()
+        }
+
+
     }
 
 
