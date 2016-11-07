@@ -49,8 +49,8 @@ export class DateRangePickerComponent implements OnChanges {
         } else {
             console.log('ngOnChanges undefined')
 
-            this.startDate = utc();
-            this.endDate = utc();
+            this.startDate = utc().startOf('day');
+            this.endDate = utc().startOf('day');
 
             this.leftDateDisplay = this.startDate.format("DD-MMM-YYYY");
             this.rightDateDisplay = this.endDate.format("DD-MMM-YYYY");
