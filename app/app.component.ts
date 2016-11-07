@@ -58,7 +58,9 @@ export class AppComponent {
     }
 
     getMomentFromDateString(dateString : string) : Moment {
-
+        if(dateString === null || dateString === ""){
+            return;
+        }
         let monthRegex  = /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/;
         let match = dateString.toLowerCase().match(monthRegex);
         console.log(match);
