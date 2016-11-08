@@ -23,16 +23,15 @@ export class DateRangePickerComponent implements OnChanges {
     leftCalander : CalanderWeek[];
     rightCalander : CalanderWeek[];
 
-
-
     secondDateSelected : boolean = true;
     
     visible:boolean = false;
+    mouseOutSidePicker : boolean = false;
 
     @ViewChild('inputBox') private inputBoxElement: ElementRef;
     @ViewChild('daterangepicker') private daterangepickerElement: ElementRef;
 
-    mouseOutSidePicker : boolean
+
 
     constructor() { 
 
@@ -65,7 +64,7 @@ export class DateRangePickerComponent implements OnChanges {
     //Click behavior : click on input show. Click again hide.
     //               : click within piker. Remain focus on input.
     //               : mouse move outside picker, click hide picker.   
-    private onEvent(event: MouseEvent): void { 
+    onEvent(event: MouseEvent): void { 
 
         if(event.type === "mouseleave"){
             this.mouseOutSidePicker = true;
@@ -74,13 +73,9 @@ export class DateRangePickerComponent implements OnChanges {
         if(event.type === "mouseenter"){
             this.mouseOutSidePicker = false;
         }
-        //keep focus on the inputBox as the user is clicking within picker
-        if(!this.mouseOutSidePicker){
-           
-        }
     }
 
-    private close(event : MouseEvent) : void {
+    close(event : MouseEvent) : void {
          if(!this.visible)
          {
             return;
@@ -91,12 +86,12 @@ export class DateRangePickerComponent implements OnChanges {
          }
     }
 
-    private onClickInput(event: MouseEvent): void {
+    onClickInput(event: MouseEvent): void {
           this.visible = this.visible ? false : true;
           this.mouseOutSidePicker = false;
     }
     
-    private onCalanderDateSelect(calanderDay : CalanderDay, leftCalander : boolean) {
+    onCalanderDateSelect(calanderDay : CalanderDay, leftCalander : boolean) {
 
             let monthAdjust : number
             if(calanderDay.date.isBefore(this.leftCalanderRefDate.clone().startOf('month'))) {
@@ -172,11 +167,10 @@ export class DateRangePickerComponent implements OnChanges {
 
     getMomentFromDateString(dateString : string) : Moment {
 
-        if(typeof dateString === "undefined"){
-            return utc("Invalid Date");
+        if(typeof dateString === "undefined" || dateString === null){
+            //intensional invalid date without warning from momentjs
+            return utc([2015, 20, 35]); 
         }
-
-
         let monthRegex  = /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/;
         let match = dateString.toLowerCase().match(monthRegex);       
         if(match !== null) {
